@@ -2,6 +2,7 @@ package dev.luiz.url_shortener.controller;
 
 import dev.luiz.url_shortener.dto.UrlRequest;
 import dev.luiz.url_shortener.dto.UrlResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import dev.luiz.url_shortener.service.UrlService;
@@ -20,7 +21,7 @@ public class UrlController {
     }
 
     @PostMapping
-    public UrlResponse shortenUrl(@RequestBody UrlRequest request) {
+    public UrlResponse shortenUrl(@Valid @RequestBody UrlRequest request) {
         String code = urlService.shortenUrl(request.getUrl());
 
         UrlResponse response = new UrlResponse();
