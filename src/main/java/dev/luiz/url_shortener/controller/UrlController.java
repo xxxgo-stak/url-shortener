@@ -1,5 +1,7 @@
 package dev.luiz.url_shortener.controller;
 
+import dev.luiz.url_shortener.dto.UrlRequest;
+import dev.luiz.url_shortener.dto.UrlResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import dev.luiz.url_shortener.service.UrlService;
@@ -13,12 +15,18 @@ public class UrlController {
     private final UrlService urlService;
 
     public UrlController(UrlService urlService){
+
         this.urlService = urlService;
     }
 
     @PostMapping
-    public String shortenUrl(@RequestBody String originalUrl) {
-        return urlService.shortenUrl(originalUrl);
+    public UrlResponse shortenUrl(@RequestBody UrlRequest request) {
+        String code = urlService.shortenUrl(request.getUrl());
+
+        UrlResponse response = new UrlResponse();
+        response.setCode(code);
+        response.setShortUrl("http://localhost:8080/api/urls/" + code);
+        return response;
     }
 
     @GetMapping("/{code}")
