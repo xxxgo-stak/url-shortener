@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-
 public class UrlService {
     private final UrlRepository urlRepository;
 
@@ -29,14 +28,23 @@ public class UrlService {
         return code;
     }
 
-    public String getOriginalUrl(String code){
+    public String getOriginalUrl(String code) {
         Optional<Url> url = urlRepository.findByCode(code);
         if (url.isPresent()) {
-            if (url.get().getExpiresAt() != null && url.get().getExpiresAt().isBefore(LocalDateTime.now()))
-                throw new UrlNotFoundException("Url expirada");
-            return url.get().getOriginalUrl();
+            if (url.get().getExpiresAt() != null && url.get().getExpiresAt().isBefore(LocalDateTime.now())) {
+                throw new UrlNotFoundException("URL expirada");
+            }
+            Url urlEntity = url.get();
+            urlEntity.setClickCount(urlEntity.getClickCount() + 1);
+            urlRepository.save(urlEntity);
+            return urlEntity.getOriginalUrl();
         } else {
             throw new UrlNotFoundException("URL não encontrada");
         }
+    }
+
+    public Url getUrlStats(String code) {
+        return urlRepository.findByCode(code)
+                .orElseThrow(() -> new UrlNotFoundException("URL não encontrada"));
     }
 }

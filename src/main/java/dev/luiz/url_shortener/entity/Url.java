@@ -13,6 +13,7 @@ public class Url {
     private  String originalUrl;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
+    private Long clickCount = 0L;
 
     public Url() {
     }
@@ -47,10 +48,9 @@ public class Url {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getExpiresAt() {
-        return expiresAt;
-    }
-    public void setExpiresAt(LocalDateTime expiresAt) {
-        this.expiresAt = expiresAt;
-    }
+    public LocalDateTime getExpiresAt() {return expiresAt;}
+    public void setExpiresAt(LocalDateTime expiresAt) {this.expiresAt = expiresAt; }
+
+    public Long getClickCount() {return clickCount;}
+    public void setClickCount(Long clickCount) {this.clickCount = clickCount; }
 }

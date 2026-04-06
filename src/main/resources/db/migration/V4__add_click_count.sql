@@ -1,0 +1,1 @@
+ALTER TABLE urls ADD COLUMN click_count BIGINT DEFAULT 0;
