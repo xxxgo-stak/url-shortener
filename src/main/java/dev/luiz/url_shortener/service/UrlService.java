@@ -24,6 +24,7 @@ public class UrlService {
         url.setCode(code);
         url.setOriginalUrl(originalUrl);
         url.setCreatedAt(LocalDateTime.now());
+        url.setExpiresAt(LocalDateTime.now().plusDays(7));
         urlRepository.save(url);
         return code;
     }
@@ -31,6 +32,8 @@ public class UrlService {
     public String getOriginalUrl(String code){
         Optional<Url> url = urlRepository.findByCode(code);
         if (url.isPresent()) {
+            if (url.get().getExpiresAt() != null && url.get().getExpiresAt().isBefore(LocalDateTime.now()))
+                throw new UrlNotFoundException("Url expirada");
             return url.get().getOriginalUrl();
         } else {
             throw new UrlNotFoundException("URL não encontrada");

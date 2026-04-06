@@ -12,6 +12,7 @@ public class Url {
     private String code;
     private  String originalUrl;
     private LocalDateTime createdAt;
+    private LocalDateTime expiresAt;
 
     public Url() {
     }
@@ -44,5 +45,12 @@ public class Url {
     }
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
     }
 }
