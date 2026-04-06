@@ -1,6 +1,7 @@
 package dev.luiz.url_shortener.service;
 
 import dev.luiz.url_shortener.entity.Url;
+import dev.luiz.url_shortener.exception.UrlNotFoundException;
 import org.springframework.stereotype.Service;
 import dev.luiz.url_shortener.repository.UrlRepository;
 
@@ -32,7 +33,7 @@ public class UrlService {
         if (url.isPresent()) {
             return url.get().getOriginalUrl();
         } else {
-            throw new RuntimeException("URL não encontrada");
+            throw new UrlNotFoundException("URL não encontrada");
         }
     }
 }
