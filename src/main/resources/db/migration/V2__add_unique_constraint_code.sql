@@ -1,0 +1,1 @@
+ALTER TABLE urls ADD CONSTRAINT uk_urls_code UNIQUE (code);
