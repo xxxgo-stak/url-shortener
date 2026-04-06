@@ -21,13 +21,13 @@ public class UrlController {
     }
 
     @PostMapping
-    public UrlResponse shortenUrl(@Valid @RequestBody UrlRequest request) {
+    public ResponseEntity<UrlResponse> shortenUrl(@Valid @RequestBody UrlRequest request) {
         String code = urlService.shortenUrl(request.getUrl());
 
         UrlResponse response = new UrlResponse();
         response.setCode(code);
         response.setShortUrl("http://localhost:8080/api/urls/" + code);
-        return response;
+        return ResponseEntity.status(201).body(response);
     }
 
     @GetMapping("/{code}")
