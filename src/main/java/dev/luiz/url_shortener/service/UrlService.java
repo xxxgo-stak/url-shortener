@@ -2,11 +2,11 @@ package dev.luiz.url_shortener.service;
 
 import dev.luiz.url_shortener.entity.Url;
 import dev.luiz.url_shortener.exception.UrlNotFoundException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import dev.luiz.url_shortener.repository.UrlRepository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,20 +27,24 @@ public class UrlService {
         urlRepository.save(url);
         return code;
     }
+    @Cacheable(value = "urls", key = "#code")
+    public String findOriginalUrl(String code) {
+        return urlRepository.findByCode(code)
+                .orElseThrow(() -> new UrlNotFoundException("Url não encontrada"))
+                .getOriginalUrl();
+    }
 
     public String getOriginalUrl(String code) {
-        Optional<Url> url = urlRepository.findByCode(code);
-        if (url.isPresent()) {
-            if (url.get().getExpiresAt() != null && url.get().getExpiresAt().isBefore(LocalDateTime.now())) {
-                throw new UrlNotFoundException("URL expirada");
-            }
-            Url urlEntity = url.get();
-            urlEntity.setClickCount(urlEntity.getClickCount() + 1);
-            urlRepository.save(urlEntity);
-            return urlEntity.getOriginalUrl();
-        } else {
-            throw new UrlNotFoundException("URL não encontrada");
+        Url urlEntity = urlRepository.findByCode(code)
+                .orElseThrow(() -> new UrlNotFoundException("URL não encontrada"));
+
+        if (urlEntity.getExpiresAt() != null && urlEntity.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new UrlNotFoundException("URL expirada");
         }
+
+        urlEntity.setClickCount(urlEntity.getClickCount() + 1);
+        urlRepository.save(urlEntity);
+        return findOriginalUrl(code);
     }
 
     public Url getUrlStats(String code) {
